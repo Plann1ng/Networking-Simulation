@@ -6,7 +6,7 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
 
 ## Diagram
-
+<pre> 
                                   +---------------------+
                                   |     Cloud/Internet  |
                                   +----------+----------+
@@ -65,7 +65,7 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
                           | (OpenVPN or Cisco VPN)     |
                           +----------------------------+
 
-
+</pre>
 
 
 ## 🎯 Lab Goals
