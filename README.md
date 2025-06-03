@@ -5,6 +5,69 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
 
+## Diagram
+
+                                  +---------------------+
+                                  |     Cloud/Internet  |
+                                  +----------+----------+
+                                             |
+                                       +-----+-----+
+                                       |  FIREWALL  |
+                                       +-----+-----+
+                                             |
+                                      +------+------+
+                                      |   Core R1    |  <-- HSRP
+                                      +------+------+
+                                             |
+     +------------------------+------+-------+------+------------------------+
+     |                        |                      |                        |
++----+----+            +------+-----+         +------+-----+          +------+-----+
+| Core R2 |            |   ISE VM   |         |  Windows   |          |  Splunk VM |
+|  (GNS3) |            | (VLAN 40)  |         |  AD Server |          |  (VLAN 30) |
++---------+            +------------+         | DHCP, DNS |          +------------+
+                                              +-----------+
+
+        |                      |                        |
+        |                      |                        |
++-------+--------+    +--------+--------+       +-------+-------+
+|    L3 SWITCH    |    |    L3 SWITCH    |       |   L3 SWITCH   |
+|   (VLAN 10)     |    |   (VLAN 20)     |       |  (VLAN 30)    |
++--------+--------+    +--------+--------+       +-------+-------+
+         |                     |                            |
+   +-----+-----+         +-----+-----+                +-----+-----+
+   | VPC Clients|         | VPC Clients|              | VPC Clients|
+   | (User Zone)|         | (Guest Zone)|             | (Sec Ops)  |
+   +-----------+         +------------+              +-----------+
+
+                       [ 802.1X + MAB Policies Enforced by ISE ]
+
+===============================================================================
+                         Planned (To Be Implemented)
+===============================================================================
+
+                          +----------------------------+
+                          |      Cisco vWLC VM         |
+                          |       (VLAN 50)            |
+                          +-------------+--------------+
+                                        |
+                                  +-----+-----+
+                                  |  Lightweight |
+                                  |     AP VM    |
+                                  +-----+-----+
+                                        |
+                          +-------------+-------------+
+                          |     Wireless Clients      |
+                          | (Test WPA2-Enterprise)    |
+                          +---------------------------+
+
+                          +----------------------------+
+                          |        VPN Gateway         |
+                          | (OpenVPN or Cisco VPN)     |
+                          +----------------------------+
+
+
+
+
 ## 🎯 Lab Goals
 
 * Simulate realistic enterprise network infrastructure
