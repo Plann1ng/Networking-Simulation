@@ -1,168 +1,125 @@
-# Networking-Simulation
-# Enterprise-Grade Network Security Lab (GNS3 + ISE + WLC + AD + Splunk)
 
-This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes VLAN segmentation, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using hostapd or Cisco vWLC. A VPN gateway is also planned to be implemented for remote access simulation.
+# Networking-Simulation
+# Enterprise-Grade Network Security Lab (GNS3 + ISE + WLC + AD + FortiGate HA + Splunk)
+
+This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes dynamic routing (OSPF), HSRP for gateway redundancy, VLAN segmentation, FortiGate firewalls in HA mode, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using Cisco vWLC. A VPN gateway and full wired/wireless NAC policy enforcement are also part of the final build plan.
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
 
-## Diagram
-<pre> 
-                                  +---------------------+
-                                  |     Cloud/Internet  |
-                                  +----------+----------+
-                                             |
-                                       +-----+-----+
-                                       |  FIREWALL  |
-                                       +-----+-----+
-                                             |
-                                      +------+------+
-                                      |   Core R1    |  <-- HSRP
-                                      +------+------+
-                                             |
-     +------------------------+------+-------+------+------------------------+
-     |                        |                      |                        |
-+----+----+            +------+-----+         +------+-----+          +------+-----+
-| Core R2 |            |   ISE VM   |         |  Windows   |          |  Splunk VM |
-|  (GNS3) |            | (VLAN 40)  |         |  AD Server |          |  (VLAN 30) |
-+---------+            +------------+         | DHCP, DNS |          +------------+
-                                              +-----------+
+---
 
-        |                      |                        |
-        |                      |                        |
-+-------+--------+    +--------+--------+       +-------+-------+
-|    L3 SWITCH    |    |    L3 SWITCH    |       |   L3 SWITCH   |
-|   (VLAN 10)     |    |   (VLAN 20)     |       |  (VLAN 30)    |
-+--------+--------+    +--------+--------+       +-------+-------+
-         |                     |                            |
-   +-----+-----+         +-----+-----+                +-----+-----+
-   | VPC Clients|         | VPC Clients|              | VPC Clients|
-   | (User Zone)|         | (Guest Zone)|             | (Sec Ops)  |
-   +-----------+         +------------+              +-----------+
+## 📊 Diagram
 
-                       [ 802.1X + MAB Policies Enforced by ISE ]
+*(Diagram to be updated soon with full topology including FortiGate HA, HSRP, OSPF Areas, and wireless simulation.)*
 
-===============================================================================
-                         Planned (To Be Implemented)
-===============================================================================
-
-                          +----------------------------+
-                          |      Cisco vWLC VM         |
-                          |       (VLAN 50)            |
-                          +-------------+--------------+
-                                        |
-                                  +-----+-----+
-                                  |  Lightweight |
-                                  |     AP VM    |
-                                  +-----+-----+
-                                        |
-                          +-------------+-------------+
-                          |     Wireless Clients      |
-                          | (Test WPA2-Enterprise)    |
-                          +---------------------------+
-
-                          +----------------------------+
-                          |        VPN Gateway         |
-                          | (OpenVPN or Cisco VPN)     |
-                          +----------------------------+
-
-</pre>
-
+---
 
 ## 🎯 Lab Goals
 
-* Simulate realistic enterprise network infrastructure
-* Implement Cisco ISE for 802.1X authentication and dynamic VLAN assignment
-* Integrate wireless access using hostapd or vWLC with ISE policies
-* Deploy VPN gateway to simulate secure remote access
-* Centralize logging using Splunk
-* Practice switch, router, and firewall configurations
+- Simulate a resilient and realistic enterprise network infrastructure
+- Implement OSPF with multi-area design
+- Use HSRP for core router redundancy
+- Integrate FortiGate firewalls in HA mode (Active-Passive)
+- Deploy Cisco ISE for 802.1X and MAB-based access control
+- Integrate Windows Server for AD, DHCP, DNS, and NTP
+- Enable wireless access with Cisco vWLC and RADIUS authentication
+- Use Splunk to collect logs from network devices and ISE
+- Simulate VPN remote access
+- Demonstrate real-world access control, segmentation, and monitoring
 
 ---
 
 ## 🧱 Components
 
-| Component      | Role/Function                                 |
-| -------------- | --------------------------------------------- |
-| GNS3           | Core network simulation platform (Linux host) |
-| Cisco Routers  | Core layer with HSRP + OSPF                   |
-| L3 Switches    | VLANs, SVIs, DHCP relays                      |
-| Cisco ISE      | 802.1X, MAB, NAC, dynamic VLAN assignment     |
-| Windows Server | AD, DNS, DHCP, NTP, SNMP                      |
-| Splunk         | Syslog and ISE log ingestion (on Ubuntu VM)   |
-| hostapd/vWLC   | Wireless LAN Controller + simulated SSIDs     |
-| VPN Gateway    | Secure remote access endpoint (planned)       |
-| Client VMs     | Windows/Linux (802.1X and web auth testing)   |
+| Component      | Role/Function                                       |
+| -------------- | --------------------------------------------------- |
+| GNS3           | Core network simulation platform (Linux host)       |
+| Cisco Routers  | Core layer with OSPF + HSRP                         |
+| FortiGate      | Edge firewall with HA (Active-Passive) + NAT        |
+| L3 Switches    | VLANs, SVIs, DHCP relays, access control enforcement|
+| Cisco ISE      | RADIUS, 802.1X, MAB, NAC, dynamic VLAN assignment   |
+| Windows Server | AD, DNS, DHCP, NTP, SNMP                            |
+| Splunk         | Centralized logging and event monitoring (Syslog)   |
+| Cisco vWLC     | Wireless LAN Controller with SSID auth via ISE      |
+| Client VMs     | Wired and wireless simulation of users (Win/Linux)  |
+| VPN Gateway    | Secure remote access endpoint (OpenVPN or Cisco)    |
 
 ---
 
 ## 🗺️ Network Design
 
-### VLAN Plan:
+### 🔁 Routing:
+- OSPF Area 0 for backbone links
+- Area 1 for LAN subnets
+- Area 2 for FortiGate and external-facing zones
+- FortiGate injects default route into OSPF domain
 
-| VLAN | Name           | Subnet        | Purpose               |
-| ---- | -------------- | ------------- | --------------------- |
-| 10   | Users          | 10.10.10.0/24 | Authenticated Clients |
-| 20   | Guests         | 10.20.20.0/24 | MAB/Guest VLAN        |
-| 30   | Security Ops   | 10.30.30.0/24 | Splunk & Admin PCs    |
-| 40   | Infrastructure | 10.40.40.0/24 | AD, ISE, DHCP, DNS    |
-| 50   | Wireless Mgmt  | 10.50.50.0/24 | vWLC, Wireless APs    |
+### 🔄 High Availability:
+- R1/R2 run HSRP for gateway redundancy with IP SLA tracking
+- FortiGate is configured in HA Active-Passive mode
+
+### 🌐 VLAN Plan:
+
+| VLAN | Name           | Subnet          | Purpose                        |
+| ---- | -------------- | --------------- | ------------------------------ |
+| 10   | Users          | 10.10.10.0/26   | Authenticated clients (wired)  |
+| 20   | Guests         | 10.10.10.64/27  | MAB/guest VLAN                 |
+| 30   | Security Ops   | 10.10.10.96/27  | Splunk, Admin, Syslog zone     |
+| 40   | Infrastructure | 10.10.10.128/27 | AD, DNS, DHCP, NTP, ISE        |
+| 50   | Wireless Mgmt  | 10.10.10.160/28 | WLC, APs, WPA2-Enterprise      |
 
 ---
 
 ## 🔧 Setup Steps (Chronological)
 
-### 1. Planning
+### 1. OSPF Configuration
 
-* Create detailed IP and VLAN assignments
-* Design physical and logical topology
+- Multi-area OSPF setup on all routers and FortiGate
+- Passive interfaces enabled
+- FortiGate injects `0.0.0.0/0` as default route
 
-### 2. Install GNS3 on Kali Linux (Challenges Noted Below)
+### 2. HSRP on Core Routers
 
-* Install GNS3 and dependencies manually
-* Configure `gns3server` to run independently
-* Ensure proper permissions for Wireshark and QEMU
+- R1 as active, R2 as standby with preemption
+- Virtual IP used by VLANs as default gateway
+- IP SLA tracking configured to detect FortiGate failure
 
-### 3. Bridge Network Interfaces
+### 3. FortiGate HA Setup
 
-* Create and configure `br0` for LAN integration
-* Add `tap0` with appropriate bridge and routing rules
-* Ensure both interfaces persist across reboots
+- Heartbeat links configured between FG1 and FG2
+- Session pickup and sync enabled
+- Interfaces matched and priority set
 
-### 4. Deploy Base Servers
+### 4. Layer 3 Switching
 
-* **Windows Server**: Install AD, DHCP, DNS, NTP
-* **Splunk Server**: Install Splunk Enterprise (Ubuntu VM inside virt-manager)
-* Configure DHCP scopes per VLAN
-
-### 5. Network Layer
-
-* Set up GNS3 routers with HSRP between core routers
-* Deploy L3 switches with SVIs and `ip routing`
-* Trunk ports between switches and routers
-* Add DHCP relays:
-
+- SVIs created for each VLAN
+- DHCP relay configured:
   ```bash
   interface vlan 10
-   ip helper-address 10.40.40.2
-  ```
+   ip helper-address 10.10.10.130
 
-### 6. Cisco ISE
+* Trunk links to routers and between switches
 
-* Deploy ISE (QEMU or VMware)
-* Configure basic setup: IP, hostname, DNS, NTP
-* Add network devices (switches, WLC)
+### 5. Deploy Base Servers
+
+* Windows Server: AD, DHCP, DNS, NTP
+* Splunk (Ubuntu VM): Log collector
+* ISE deployed via QEMU or VMware
+
+### 6. ISE Configuration
+
+* Add all network devices (switches, WLC)
 * Define authentication and authorization policies
-* Enable internal CA (optional)
+* Setup dynamic VLAN assignment
+* Optional internal CA + endpoint profiling
 
-### 7. 802.1X on Switches
+### 7. Switch Dot1X Config
 
 ```bash
 aaa new-model
-radius-server host 10.40.40.3 key ISE_SECRET
+radius-server host 10.10.10.130 key ise_secret
 ip radius source-interface vlan 40
-!
 dot1x system-auth-control
-!
 interface FastEthernet0/1
  switchport mode access
  authentication port-control auto
@@ -170,70 +127,89 @@ interface FastEthernet0/1
  spanning-tree portfast
 ```
 
-### 8. Wireless Setup (Choose One)
+### 8. Wireless Setup
 
-#### Option A: hostapd (Open Source)
+#### Option A: hostapd
 
-* Run `hostapd` on Linux VM with USB Wi-Fi or bridge
-* Connect clients to WPA2-Enterprise SSID
-* Point to ISE via FreeRADIUS or raw RADIUS config
+* Linux VM acts as open-source AP using WPA2-Enterprise
+* ISE used as RADIUS backend
 
-#### Option B: Cisco vWLC + Lightweight AP
+#### Option B: Cisco vWLC
 
-* Deploy vWLC in VLAN 50
-* Connect AP via trunk link
-* Configure WLAN → use RADIUS auth with ISE
-* Create client SSID (802.1X enabled)
+* Deployed in VLAN 50
+* SSIDs mapped to VLANs
+* Authentication forwarded to ISE
+* Wireless clients simulate WPA2-Enterprise behavior
 
-### 9. Logging (Splunk)
+### 9. Splunk Logging
 
-* Enable syslog on switches:
+* Configure syslog on network devices:
 
-```bash
-logging host 10.30.30.2
-logging trap informational
-```
+  ```bash
+  logging host 10.10.10.110
+  logging trap informational
+  ```
+* Forward ISE logs to Splunk on UDP port 514
+* Create dashboards for:
 
-* Forward ISE syslogs to Splunk (UDP 514)
-* Optional: Create dashboards for auth events
+  * 802.1X events
+  * HSRP status
+  * Interface tracking
 
-### 10. Testing
+### 10. User Simulation
 
-* Connect client VM to access port
-* Trigger MAB/802.1X auth via switch
-* Check ISE logs and Splunk events
-* Validate VLAN assignment and network access
+* VPCS or Windows/Linux VMs used as clients
+* Connect to 802.1X-enabled access ports
+* Trigger MAB or .1X authentication
+* Validate VLAN assignment via ISE logs and Splunk
 
 ---
 
 ## ⚠️ Setup Challenges & Fixes
 
-* **GNS3 on Kali**: Required manual installation and fixing broken dependencies.
-* **gns3server must be launched manually** before starting the GUI or project.
-* **Network bridging**: Setting up `br0` and `tap0` interfaces with persistent NAT/bridge configs was non-trivial.
-* **Permissions**: Had to manually allow user access to Wireshark/QEMU network interfaces.
+* **GNS3 interface flapping**: Re-created links, hardcoded duplex
+* **ARP "incomplete"**: Caused by GNS3 desync, resolved with link recreation
+* **Bridging setup**: Manual setup of `br0` and `tap0` on Linux
+* **ISE resource demand**: Minimum 8 GB RAM + long boot time
+* **Splunk capture**: Needed proper UDP forwarding rules
+* **Permissions**: Added user to groups for QEMU and Wireshark
 
 ---
 
-## 🔍 Reasoning Behind Design Choices
+## 🧠 Future Improvements (Planned)
 
-* **GNS3 on Linux**: Offers strong support for virtualization, better resource handling for ISE and vWLC, and native integration with virt-manager.
-* **Bridged Interface for Splunk VM**: Ensures connectivity with both the simulated GNS3 network and external resources like updates or syslog collection.
-* **Cisco ISE**: Allows centralized identity-based policy enforcement using RADIUS, 802.1X, and MAB for both wired and wireless clients.
-* **Wireless Simulation**: Covers real-world enterprise use cases with either cost-free hostapd or Cisco-standard vWLC/AP deployments.
-* **Splunk Logging**: Centralized monitoring solution for correlating authentication events, rogue device activity, and system health.
-* **Dynamic VLANs**: Supports segmentation based on user or device role, enforced via ISE policies.
-* **VPN Gateway (Planned)**: Enables remote access simulation for workforce or red-team testing in a zero-trust model.
+* [ ] VPN Gateway for remote access (OpenVPN or Cisco)
+* [ ] Add BGP to simulate ISP with FortiGate redistribution
+* [ ] Export NetFlow/IPFIX to Splunk
+* [ ] Configure guest web portal with ISE
+* [ ] TrustSec simulation (if supported)
+* [ ] Automate deployment with Python (Netmiko/Nornir)
+* [ ] Add attack simulations (e.g., MAC spoof, rogue DHCP)
 
 ---
 
 ## 📂 Additional Files
 
-All device configuration files (switches, routers, ISE, WLC, VPN) will be provided in a separate `/configs` directory inside this repository. These include:
+All configs will be available in the `/configs` directory:
 
-* Layer 3 switch and trunk configs
-* DHCP relay setups
-* HSRP/OSPF router configs
-* ISE network device profiles and policies
-* vWLC WLAN and RADIUS configs
-* VPN configuration (OpenVPN or Cisco VPN setup, TBD)
+* Router configs (HSRP, OSPF, IP SLA)
+* Switch VLAN + SVI + Dot1X configs
+* FortiGate HA + routing + NAT configs
+* ISE device policies and authentication rules
+* vWLC SSID and RADIUS configs
+* Splunk syslog receiver configs
+* VPN setup scripts (TBD)
+
+---
+
+## 💡 Design Justification
+
+* **OSPF + Areas**: Promotes modular routing and fast convergence
+* **HSRP + IP SLA**: Gives gateway failover with detection of edge failure
+* **FortiGate HA**: Realistic enterprise firewall resilience
+* **ISE + VLANs**: Centralized, identity-based access control
+* **Splunk Logging**: Real-time monitoring and historical analysis
+* **GNS3 on Linux**: Full control over virtual bridge/tap routing and VM orchestration
+* **Wireless Simulation**: Emulates real-world 802.1X and guest onboarding
+
+```
