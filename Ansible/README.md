@@ -4,9 +4,15 @@
 ## 🔧 Project: Network Automation with Ansible on Ubuntu
 
 ### 🖥️ Host Environment
-This automation is configured and run from an **Ubuntu Linux** machine using **Ansible**. It is designed to push syslog configurations to Cisco routers and switches, and also forms the basis for future security-triggered automation involving Cisco ASA firewalls.
+This automation is configured and run from an **Ubuntu Linux** machine using **Ansible**. It is designed to push syslog configurations to Cisco routers and switches, it can also be used as a skeleton to push any other type of configurations to the registered hosts.
 
 ---
+
+## Prerequisites (Ubuntu based host with Cisco IOS devices):
+1. Python3 library on Ubuntu machine
+2. Enable SSH on the host machines (Since this is a lab setup this config uses same password for all the hosts, however consider using different password for each device within your network.)
+
+
 
 ## ✅ Step 1: Install Ansible on Ubuntu
 
@@ -24,6 +30,7 @@ To confirm installation:
 ansible --version
 ```
 
+
 ---
 
 ## ✅ Step 2: Inventory File (hosts.yml)
@@ -34,12 +41,12 @@ all:
     routers:
       hosts:
         router1:
-          ansible_host: 10.10.10.1
+          SpineRouter1: 10.10.10.1
           ansible_user: admin
           ansible_password: admin123
     switches:
       hosts:
-        switch1:
+        LeafSwitch1:
           ansible_host: 10.10.10.2
           ansible_user: admin
           ansible_password: admin123
@@ -47,10 +54,10 @@ all:
 
 ---
 
-## ✅ Step 3: Playbook to Push Syslog Settings (syslog_config.yml)
+## ✅ Step 3: Playbook to Push Syslog Settings (base_config.yml)
 
 ```yaml
-- name: Push syslog config to Cisco devices
+- name: Push syslog, NTP, and SNMP config to Cisco devices
   hosts: all
   gather_facts: no
   connection: network_cli
@@ -61,6 +68,21 @@ all:
         lines:
           - logging host 10.10.10.98
           - logging trap informational
+
+    - name: Configure NTP server
+      ios_config:
+        lines:
+          - ntp server 10.10.10.102
+          - clock timezone UTC 0
+
+    - name: Configure SNMP server
+      ios_config:
+        lines:
+          - snmp-server community public RO
+          - snmp-server location Lab-Network
+          - snmp-server contact admin@gns3lab.com
+          - snmp-server host 10.10.10.102 version 2c public
+
 ```
 
 ---
@@ -70,7 +92,7 @@ all:
 This setup will later be expanded to include:
 - **Cisco ASA** logs forwarded to **Splunk**.
 - **Real-time Splunk alerts** for blacklisted access attempts.
-- A trigger to run Ansible to shutdown the interface on the router/switch that connects the offending device.
+- A trigger to run Ansible to shutdown the interface on the corresponding Leaf Switch that connects the offending device.
 
 ---
 
@@ -80,5 +102,3 @@ ANSIBLE_INVENTORY_ENABLED=ini,yaml ansible-playbook -i hosts.yml syslog_config.y
 ```
 
 ---
-
-Feel free to fork this repo and enhance it for NMS, SNMP, backup automation, or security enforcement policies.
