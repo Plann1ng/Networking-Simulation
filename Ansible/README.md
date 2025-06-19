@@ -87,12 +87,14 @@ all:
 
 ---
 
-## 🔜 Future Plans: ASA-triggered Shutdown via Ansible
+## 🔜 Future Plans: SSH Brute Force Detection + Automated Port Shutdown
 
-This setup will later be expanded to include:
-- **Cisco ASA** logs forwarded to **Splunk**.
-- **Real-time Splunk alerts** for blacklisted access attempts.
-- A trigger to run Ansible to shutdown the interface on the corresponding Leaf Switch that connects the offending device.
+(Considering the intruder is within the VLAN and he is a current employee with unethical intentions)
+
+Syslog-based monitoring of SSH login attempts from Cisco devices.
+Splunk detects repeated failed login attempts (e.g., 3+ within 2 minutes).
+Splunk alert triggers Ansible, which locates the offending IP and shuts down the switch port using CDP/LLDP or ARP correlation.
+Optional integration with Cisco ISE to enrich logs with device info like OS, hostname, and user context.
 
 ---
 
