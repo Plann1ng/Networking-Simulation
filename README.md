@@ -8,9 +8,10 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 
 ---
 
-## 📊 Diagram
+## 📊 Topology
 
-**
+![Topology](GNS3LabTopology.png)
+
 
 ---
 
