@@ -24,4 +24,4 @@ The Ubuntu VM acts as:
   * NTP/DNS/SNMP settings
   * ACL changes (triggered via Splunk alerts)
   * Failover routing or interface shutdowns
-* Future plan: automate **interface shutdown** for unauthorized hosts detected by ISE or Splunk
+  * Automated VLAN intrusion automation by collecting logs from internal hosts for unathorized access tries and triggering .sh script on the host machine where the intruder's mac adress is shunned from the switch by dynamic swithport security protect mechanism. Further collecting more information about the specific device through ISE regarding the username, OS and emailing the logs to the responsibles for further check.
