@@ -2,7 +2,7 @@
 # Networking-Simulation
 # Enterprise-Grade Network Security Lab (GNS3 + ISE + WLC + AD + FortiGate HA + Splunk)
 
-This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes dynamic routing (OSPF), HSRP for gateway redundancy, VLAN segmentation, FortiGate firewalls in HA mode, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using Cisco vWLC. A VPN gateway and full wired/wireless NAC policy enforcement are also part of the final build plan.
+This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes multiarea dynamic routing (OSPF), HSRP for gateway redundancy, VLAN segmentation, FortiGate firewalls in HA mode, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using Cisco vWLC. A VPN gateway and full wired/wireless NAC policy enforcement are also part of the final build plan.
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
 
@@ -10,7 +10,7 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 
 ## 📊 Diagram
 
-*(Diagram to be updated soon with full topology including FortiGate HA, HSRP, OSPF Areas, and wireless simulation.)*
+**
 
 ---
 
@@ -43,7 +43,7 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 | Cisco vWLC     | Wireless LAN Controller with SSID auth via ISE      |
 | Client VMs     | Wired and wireless simulation of users (Win/Linux)  |
 | VPN Gateway    | Secure remote access endpoint (OpenVPN or Cisco)    |
-
+| Windows Client | Dummy windows client to test ISE + AD configurations|
 ---
 
 ## 🗺️ Network Design
@@ -170,7 +170,7 @@ interface FastEthernet0/1
 * **GNS3 interface flapping**: Re-created links, hardcoded duplex
 * **ARP "incomplete"**: Caused by GNS3 desync, resolved with link recreation
 * **Bridging setup**: Manual setup of `br0` and `tap0` on Linux
-* **ISE resource demand**: Minimum 8 GB RAM + long boot time
+* **ISE resource demand**: Minimum 12 GB RAM + long boot time
 * **Splunk capture**: Needed proper UDP forwarding rules
 * **Permissions**: Added user to groups for QEMU and Wireshark
 
