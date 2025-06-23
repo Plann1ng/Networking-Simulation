@@ -1,0 +1,25 @@
+- name: Push syslog, NTP, and SNMP config to Cisco devices
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Configure syslog server
+      ios_config:
+        lines:
+          - logging host 10.10.10.98
+          - logging trap informational
+
+    - name: Configure NTP server
+      ios_config:
+        lines:
+          - ntp server 10.10.10.102
+          - clock timezone UTC 0
+
+    - name: Configure SNMP server
+      ios_config:
+        lines:
+          - snmp-server community public RO
+          - snmp-server location Lab-Network
+          - snmp-server contact admin@gns3lab.com
+          - snmp-server host 10.10.10.102 version 2c public
