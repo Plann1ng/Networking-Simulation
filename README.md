@@ -205,6 +205,7 @@ interface FastEthernet0/1
 * [ ] TrustSec simulation (if supported)
 * [ ] Automate deployment with Python (Netmiko/Nornir)
 * [ ] Add attack simulations (e.g., MAC spoof, rogue DHCP)
+* [ ] Add a backup Server vlan for seamless transition in case one or more servers are not reachable
 
 ---
 
