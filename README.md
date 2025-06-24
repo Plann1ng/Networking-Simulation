@@ -2,7 +2,26 @@
 # Networking-Simulation
 # Enterprise-Grade Network Security Lab (GNS3 + ISE + WLC + AD + FortiGate HA + Splunk)
 
-This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes multiarea dynamic routing (OSPF), HSRP for gateway redundancy, VLAN segmentation, FortiGate firewalls in HA mode, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using Cisco vWLC. A VPN gateway and full wired/wireless NAC policy enforcement are also part of the final build plan.
+Hi!
+
+Thanks for being here.
+
+This lab simulates a full enterprise-grade network infrastructure using GNS3. It includes multi-area dynamic routing (OSPF), HSRP for gateway redundancy, VLAN segmentation, FortiGate firewalls in HA mode, Cisco ISE for wired/wireless 802.1X authentication, Active Directory (DNS, DHCP, NTP, SNMP), Splunk for centralized logging, and simulated wireless using Cisco vWLC. A VPN gateway and full wired/wireless NAC policy enforcement are also part of the final build plan. I wanted to create this lab to keep sharp my knowledge about multiple solutions at the same time as:
+
+* Server virtualisation
+* ISE solutions
+* Routing/Switching
+* Network security
+* Windows Server
+* vWLC solutions
+* Fortigate configurations
+* ASA/Firepower configurations
+* AnyConnect and S2S VPN
+* Redundancy in networking
+
+A fair point to state is that the more I add to this network the more possibilities and room for improvement I see. This lab repo will be constantly updated, I appreciate your interest and feel free to suggest me upgrades, ask questions, or point out mistakes on **rstmduran@gmail.com**
+
+
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
 
@@ -212,5 +231,17 @@ All configs will be available in the `/configs` directory:
 * **Splunk Logging**: Real-time monitoring and historical analysis
 * **GNS3 on Linux**: Full control over virtual bridge/tap routing and VM orchestration
 * **Wireless Simulation**: Emulates real-world 802.1X and guest onboarding
+
+## 🔄 Example Authentication Workflow
+
+1. A Windows 7 client is plugged into ESW3 on a .1X-enabled port.
+2. The switch sends EAP-Request to the client.
+3. The client authenticates using its AD credentials (verified by ISE via RADIUS).
+4. ISE performs posture check (OS, AV, domain).
+5. If compliant:
+   - ISE assigns VLAN 10 (Users) via dACL or VLAN override.
+   - Syslog of the authentication is forwarded to Splunk.
+6. If non-compliant or MAB:
+   - ISE places client in VLAN 20 (Guest).
 
 ```
