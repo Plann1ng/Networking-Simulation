@@ -23,7 +23,6 @@ A fair point to state is that the more I add to this network the more possibilit
 
 **NOTE**:
 **Planned and performed changes will be listed under [Updates](./Updates/) directory on chronological order.**
-x
 
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
