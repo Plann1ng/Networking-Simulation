@@ -22,7 +22,7 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 A fair point to state is that the more I add to this network the more possibilities and room for improvement I see. This lab repo will be constantly updated, I appreciate your interest and feel free to suggest me upgrades, ask questions, or point out mistakes on **rstmduran@gmail.com** .
 
 **NOTE**:
-**Planned and performed changes will be listed under - [Updates](./Networking-Simulation/Updates/) directory on chronological order.**
+**Planned and performed changes will be listed under [Updates](./Networking-Simulation/Updates/) directory on chronological order.**
 x
 
 
