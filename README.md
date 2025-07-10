@@ -22,7 +22,8 @@ This lab simulates a full enterprise-grade network infrastructure using GNS3. It
 A fair point to state is that the more I add to this network the more possibilities and room for improvement I see. This lab repo will be constantly updated, I appreciate your interest and feel free to suggest me upgrades, ask questions, or point out mistakes on **rstmduran@gmail.com** .
 
 **NOTE**:
-**Planned and performed changes will be listed under Network-Simulations/Updates directory on chronological order.**
+**Planned and performed changes will be listed under - [Updates](./Networking-Simulation/Updates/) directory on chronological order.**
+x
 
 
 > 💡 This lab is deployed and tested on **GNS3 running on Linux (Kali)**. The Splunk server is hosted on an **Ubuntu VM inside Virtual Machine Manager (virt-manager)**. The Ubuntu VM uses a **bridged interface** to get internet access and participate in the GNS3 virtual network.
